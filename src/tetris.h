@@ -8,11 +8,21 @@
 #define GRID_WIDTH 10
 #define GRID_HEIGHT 20
 
+#define GRAVITY 20
+
 typedef struct {
   int score;
-  char grid[GRID_WIDTH][GRID_HEIGHT];
-  tetris_piece current_piece;
-  tetris_piece hold_piece;
+
+  int rows;
+  int cols;  
+  char * grid;
+
+  tetris_piece current;
+  tetris_piece hold;
+  tetris_piece next;
+  
+  int ticks_till_gravity;
+  int current_gravity;
 
 } tetris_game;
 typedef struct {
