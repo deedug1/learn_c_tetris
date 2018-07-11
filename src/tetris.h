@@ -8,11 +8,10 @@
 #define GRID_COLS 10
 #define GRID_ROWS 20
 
-#define GRAVITY 20
+#define GRAVITY 500
 #define EMPTY_BLOCK ' '
 #define BLOCK ' '
 
-location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS];
 typedef struct {
   int row;
   int col;
@@ -39,12 +38,13 @@ typedef enum {
   I_TYPE, O_TYPE
 } types;
 typedef enum {
-  E_TYPE, I_TYPE, O_TYPE
+  E_BLOCK, I_BLOCK, O_BLOCK
 } block_types;
 typedef enum {
   MOVE_LEFT, MOVE_RIGHT
 } moves;
 
+location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS];
 void set_block(tetris_game * tg, int row, int col, char c);
 char get_block(tetris_game * tg, int row, int col);
 tetris_game * create_tg();

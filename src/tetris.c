@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "tetris.h"
 location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
  {
@@ -21,9 +22,12 @@ location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
 tetris_game * create_tg() {
   tetris_game * tg = (tetris_game *)malloc(sizeof(tetris_game));
   tg->grid = (char *)malloc(sizeof(char) * GRID_COLS * GRID_ROWS);
+  memset(tg->grid, E_BLOCK, GRID_COLS * GRID_ROWS);
   tg->rows = GRID_ROWS;
   tg->cols = GRID_COLS;
   tg->score = 0;
+  tg->current_gravity = GRAVITY;
+  tg->ticks_till_gravity = GRAVITY;
   new_current_piece(tg);
   return tg;
 }
@@ -43,7 +47,7 @@ void put_piece(tetris_game * tg, tetris_piece p) {
   int index, row, col;
   for(index = 0; index < NUM_BLOCKS; index++) {
     row = p.location.row + TETROMINOS[p.type][p.orientation][index].row;
-    col = p.location.row + TETROMINOS[p.type][p.orientation][index].col;
+    col = p.location.col + TETROMINOS[p.type][p.orientation][index].col;
     set_block(tg, row, col, p.type + 1);
   }
 }
@@ -56,31 +60,31 @@ void shift_rows(tetris_game * tg, int row) {
   for(row = row - 1; row >= 0; row--) {
     for(col = 0; col < tg->cols; col++) {
       set_block(tg, row + 1, col, get_block(tg, row, col));
-      set_block(tg, row, col, E_TYPE);
+      set_block(tg, row, col, E_BLOCK);
     }
   }
 }
 bool is_row_full(tetris_game * tg, int row) {
   int col;
   for(col = 0; col < tg->cols; col++){
-    if(get_block(tg, row, col) == E_TYPE) {
+    if(get_block(tg, row, col) == E_BLOCK) {
       return false;
     }
   }
   return true;
 }
 bool is_inbounds(tetris_game * tg, int row, int col) {
-  return row >= tg->rows ||
-         row < 0 ||
-         col >= tg-> cols ||
-         col < 0;
+  return row < tg->rows &&
+         row >= 0 &&
+         col < tg->cols &&
+         col > 0;
 }
 bool piece_fits(tetris_game * tg, tetris_piece p) {
   int index, row, col;
   for(index = 0; index < NUM_BLOCKS; index++) {
     row = p.location.row + TETROMINOS[p.type][p.orientation][index].row;
     col = p.location.col + TETROMINOS[p.type][p.orientation][index].col;
-    if(!is_inbounds(tg, row, col) || get_block(tg, row, col) != E_TYPE) {
+    if(!is_inbounds(tg, row, col) || get_block(tg, row, col) != E_BLOCK) {
       return false;
     }
   }

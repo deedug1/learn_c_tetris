@@ -1,0 +1,1 @@
+gcc ./src/main.c ./src/tetris.c ./src/display.c -lpdcurses -o tetris
