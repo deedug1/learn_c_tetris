@@ -3,7 +3,7 @@
 
 #define NUM_BLOCKS 4
 #define NUM_ORIENTATIONS 4
-#define NUM_TYPES 2
+#define NUM_TYPES 7
 
 #define GRID_COLS 10
 #define GRID_ROWS 20
@@ -28,6 +28,7 @@ typedef struct {
   int cols;  
   char * grid;
 
+  tetris_piece next;
   tetris_piece current;
   
   int ticks_till_gravity;
@@ -35,10 +36,10 @@ typedef struct {
 
 } tetris_game;
 typedef enum {
-  I_TYPE, O_TYPE
+  I_TYPE, O_TYPE, Z_TYPE, T_TYPE, S_TYPE, J_TYPE, L_TYPE
 } types;
 typedef enum {
-  E_BLOCK, I_BLOCK, O_BLOCK
+  E_BLOCK, I_BLOCK, O_BLOCK, Z_BLOCK, T_BLOCK, S_BLOCK, J_BLOCK, L_BLOCK
 } block_types;
 typedef enum {
   MOVE_DONT, MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN, MOVE_HOLD, MOVE_ROTATE_CLOCK, MOVE_ROTATE_COUNTER

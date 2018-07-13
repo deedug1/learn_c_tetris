@@ -5,19 +5,49 @@
 #include <string.h>
 #include "tetris.h"
 location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
- {
+ { // I
    {{0,0}, {0,1}, {0,2}, {0,3}},
    {{0,0}, {1,0}, {2,0}, {3,0}},
    {{0,0}, {0,1}, {0,2}, {0,3}},
    {{0,0}, {1,0}, {2,0}, {3,0}},
   },
-  {
+  { // O
    {{0,0}, {0,1}, {1,0}, {1,1}},
    {{0,0}, {0,1}, {1,0}, {1,1}},
    {{0,0}, {0,1}, {1,0}, {1,1}},
    {{0,0}, {0,1}, {1,0}, {1,1}},
+  },
+  { // Z
+   {{0,0}, {0,1}, {1,1}, {1,2}},
+   {{0,0}, {0,1}, {1,1}, {1,2}},
+   {{0,1}, {1,1}, {1,0}, {2,0}},
+   {{0,1}, {1,1}, {1,0}, {2,0}},
+  },
+  { // T
+   {{0,1}, {1,0}, {1,1}, {1,2}},
+   {{0,0}, {1,0}, {1,1}, {2,0}},
+   {{0,0}, {0,1}, {0,2}, {1,1}},
+   {{0,1}, {1,1}, {1,0}, {2,1}},
+  },
+  { // S
+   {{1,0}, {1,1}, {0,1}, {0,2}},
+   {{0,0}, {1,0}, {1,1}, {2,1}},
+   {{1,0}, {1,1}, {0,1}, {0,2}},
+   {{0,0}, {1,0}, {1,1}, {2,1}},
+  },
+  { // J
+   {{0,0}, {1,0}, {1,1}, {1,2}},
+   {{0,1}, {1,1}, {2,1}, {2,0}},
+   {{0,0}, {0,1}, {0,2}, {1,2}},
+   {{0,0}, {0,1}, {1,0}, {2,0}},
+  },
+  { // L
+   {{1,0}, {1,1}, {1,2}, {0,2}},
+   {{0,0}, {0,1}, {1,1}, {2,1}},
+   {{0,0}, {1,0}, {0,1}, {0,2}},
+   {{0,0}, {1,0}, {2,0}, {2,1}},
   }
-  };
+};
 
 tetris_game * create_tg() {
   tetris_game * tg = (tetris_game *)malloc(sizeof(tetris_game));
@@ -29,13 +59,16 @@ tetris_game * create_tg() {
   tg->current_gravity = GRAVITY;
   tg->ticks_till_gravity = GRAVITY;
   new_current_piece(tg);
+  new_current_piece(tg);
   return tg;
 }
 void new_current_piece(tetris_game * tg) {
-  tg->current.location.row = 0;
+  tg->current = tg->next;
   tg->current.location.col = tg->cols / 2;
-  tg->current.type = rand() % NUM_TYPES;
-  tg->current.orientation = 0;
+  tg->next.type = rand() % NUM_TYPES;
+  tg->next.location.row = 0;
+  tg->next.location.col = 0;
+  tg->next.orientation = 0;
 }
 char get_block(tetris_game * tg, int row, int col) {
   return tg->grid[tg->cols * row + col];
