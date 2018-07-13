@@ -8,7 +8,7 @@
 #define GRID_COLS 10
 #define GRID_ROWS 20
 
-#define GRAVITY 500
+#define GRAVITY 25
 #define EMPTY_BLOCK ' '
 #define BLOCK ' '
 
@@ -41,7 +41,7 @@ typedef enum {
   E_BLOCK, I_BLOCK, O_BLOCK
 } block_types;
 typedef enum {
-  MOVE_LEFT, MOVE_RIGHT
+  MOVE_DONT, MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN, MOVE_HOLD, MOVE_ROTATE_CLOCK, MOVE_ROTATE_COUNTER
 } moves;
 
 location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS];

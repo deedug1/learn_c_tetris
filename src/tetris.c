@@ -51,6 +51,13 @@ void put_piece(tetris_game * tg, tetris_piece p) {
     set_block(tg, row, col, p.type + 1);
   }
 }
+void rotate_piece(tetris_piece * p, int direction) {
+  p->orientation += direction;
+  if(p->orientation < 0) {
+    p->orientation += NUM_ORIENTATIONS;
+  }
+  p->orientation %= NUM_ORIENTATIONS;
+}
 void remove_piece(tetris_game * tg, tetris_piece p) {
 
 }
@@ -77,7 +84,7 @@ bool is_inbounds(tetris_game * tg, int row, int col) {
   return row < tg->rows &&
          row >= 0 &&
          col < tg->cols &&
-         col > 0;
+         col >= 0;
 }
 bool piece_fits(tetris_game * tg, tetris_piece p) {
   int index, row, col;
@@ -93,9 +100,9 @@ bool piece_fits(tetris_game * tg, tetris_piece p) {
 void step_gravity(tetris_game * tg) {
   tg->ticks_till_gravity--;
   if(tg->ticks_till_gravity <= 0) {
+    tg->ticks_till_gravity = tg->current_gravity;
     tg->current.location.row++;
     if(piece_fits(tg, tg->current)) {
-      tg->ticks_till_gravity = tg->current_gravity;
     } else {
       tg->current.location.row--;
       put_piece(tg, tg->current);
@@ -113,6 +120,16 @@ void handle_input(tetris_game * tg, int input) {
     tg->current.location.col++;
     if(!piece_fits(tg, tg->current)) {tg->current.location.col--;}
     break;
+    case MOVE_DOWN:
+      tg->current.location.row++;
+      if(!piece_fits(tg, tg->current)) {tg->current.location.row--;}
+    break;
+    case MOVE_ROTATE_CLOCK:
+      rotate_piece(&tg->current, 1);
+      break;
+    case MOVE_ROTATE_COUNTER:
+      rotate_piece(&tg->current, -1);
+      break;
     default: // no input do nothing
     break;
   }
