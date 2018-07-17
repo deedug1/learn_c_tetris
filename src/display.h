@@ -5,10 +5,13 @@
 
 WINDOW * BOARD;
 WINDOW * NEXT; 
+
+
 void init_screen();
 void init_colors();
 void draw_game(tetris_game * tg);
-void draw_board(WINDOW * w, tetris_game * tg);
+void draw_board(tetris_game * tg);
+void draw_next(tetris_piece next_piece);
 void draw_piece(WINDOW * w, tetris_piece tp);
 int poll_input();
 void sleep(int ms);

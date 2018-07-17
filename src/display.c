@@ -3,22 +3,7 @@
 #include "tetris.h"
 #include "display.h"
 #include <time.h>
-void draw_board(WINDOW * w, tetris_game * tg) {
-  int row, col;
-  box(w, 0, 0);
-  for(row = 0; row < tg->rows; row++) {
-    wmove(w, row + 1, 1);
-    for(col = 0; col < tg-> cols; col++) {
-      if(get_block(tg, row, col) != E_BLOCK) {
-        waddch(w, BLOCK|COLOR_PAIR(get_block(tg, row, col))|A_REVERSE);
-        waddch(w, BLOCK|COLOR_PAIR(get_block(tg, row, col))|A_REVERSE);
-      } else {
-        waddch(w, EMPTY_BLOCK);
-        waddch(w, EMPTY_BLOCK);
-      }
-    }
-  }
-}
+
 void draw_piece(WINDOW * w, tetris_piece p) {
   int row, col;
   int index;
@@ -30,24 +15,69 @@ void draw_piece(WINDOW * w, tetris_piece p) {
     waddch(w, BLOCK|COLOR_PAIR(p.type + 1)|A_REVERSE); 
   }
 }
-void draw_game(tetris_game * tg) {
+/**
+ * Draws the tetris board corresponding to the given tetris game.
+ * Uses the WINDOW * BOARD to draw and returns if BOARD is not defined
+ */
+void draw_board(tetris_game * tg) {
+  int row, col;
+  if(!BOARD) { 
+    printf("Board is not defined\n");
+    return; 
+  }
   wclear(BOARD);
-  wclear(NEXT);
-  draw_board(BOARD, tg);
+  box(BOARD, 0, 0);
+  for(row = 0; row < tg->rows; row++) {
+    wmove(BOARD, row + 1, 1);
+    for(col = 0; col < tg->cols; col++) {
+      if(get_block(tg, row, col) != E_BLOCK) {
+        waddch(BOARD, BLOCK|COLOR_PAIR(get_block(tg, row, col))|A_REVERSE);
+        waddch(BOARD, BLOCK|COLOR_PAIR(get_block(tg, row, col))|A_REVERSE);
+      } else {
+        waddch(BOARD, EMPTY_BLOCK);
+        waddch(BOARD, EMPTY_BLOCK);
+      }
+    }
+  }
   draw_piece(BOARD, tg->current);
-  box(NEXT,0,0);
-  draw_piece(NEXT, tg->next);
   wrefresh(BOARD);
-  wrefresh(NEXT);
 }
+
+
+/**
+ * Draws the tetris board corresponding to the given tetris game.
+ * Uses WINDOW * NEXT to draw and returns if NEXT is not defined
+ */
+void draw_next(tetris_piece next_piece) {
+  if(!NEXT) {
+    printf("NEXT is not defined\n");
+    return;
+  }
+  wclear(NEXT);
+  box(NEXT, 0, 0);
+  draw_piece(NEXT, next_piece);
+  wrefresh(NEXT);
+
+}
+
+void draw_game(tetris_game * tg) {
+  draw_board(tg);
+  draw_next(tg->next);
+}
+
 int poll_input() {
   char input = getch();
   switch(input) {
     case 'a': return MOVE_LEFT;
+    case 'A': return MOVE_LEFT;
     case 'd': return MOVE_RIGHT;
+    case 'D': return MOVE_RIGHT;
     case 's': return MOVE_DOWN;
+    case 'S': return MOVE_DOWN;
     case 'r': return MOVE_ROTATE_CLOCK;
+    case 'R': return MOVE_ROTATE_CLOCK;
     case 't': return MOVE_ROTATE_COUNTER;
+    case 'T': return MOVE_ROTATE_COUNTER;
     case ' ': return MOVE_HOLD;
     default: return MOVE_DONT;
   }

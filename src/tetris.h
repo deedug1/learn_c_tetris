@@ -5,9 +5,6 @@
 #define NUM_ORIENTATIONS 4
 #define NUM_TYPES 7
 
-#define GRID_COLS 10
-#define GRID_ROWS 20
-
 #define GRAVITY 25
 #define EMPTY_BLOCK ' '
 #define BLOCK ' '
@@ -48,7 +45,7 @@ typedef enum {
 location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS];
 void set_block(tetris_game * tg, int row, int col, char c);
 char get_block(tetris_game * tg, int row, int col);
-tetris_game * create_tg();
+tetris_game * create_tg(int rows, int cols);
 void new_current_piece(tetris_game * tg);
 void put_piece(tetris_game * tg, tetris_piece p);
 void shift_rows(tetris_game * tg, int row);

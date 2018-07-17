@@ -49,12 +49,12 @@ location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
   }
 };
 
-tetris_game * create_tg() {
+tetris_game * create_tg(int rows, int cols) {
   tetris_game * tg = (tetris_game *)malloc(sizeof(tetris_game));
-  tg->grid = (char *)malloc(sizeof(char) * GRID_COLS * GRID_ROWS);
-  memset(tg->grid, E_BLOCK, GRID_COLS * GRID_ROWS);
-  tg->rows = GRID_ROWS;
-  tg->cols = GRID_COLS;
+  tg->grid = (char *)malloc(sizeof(char) * cols * rows);
+  memset(tg->grid, E_BLOCK, cols * rows);
+  tg->rows = rows;
+  tg->cols = cols;
   tg->score = 0;
   tg->current_gravity = GRAVITY;
   tg->ticks_till_gravity = GRAVITY;
