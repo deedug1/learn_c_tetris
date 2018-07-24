@@ -59,7 +59,9 @@ void draw_next(tetris_piece next_piece) {
   wrefresh(NEXT);
 
 }
-
+/**
+ * Draws the tetris game
+ */
 void draw_game(tetris_game * tg) {
   draw_board(tg);
   draw_next(tg->next);
@@ -67,17 +69,12 @@ void draw_game(tetris_game * tg) {
 
 int poll_input() {
   char input = getch();
-  switch(input) {
+  switch(lower(input)) {
     case 'a': return MOVE_LEFT;
-    case 'A': return MOVE_LEFT;
     case 'd': return MOVE_RIGHT;
-    case 'D': return MOVE_RIGHT;
     case 's': return MOVE_DOWN;
-    case 'S': return MOVE_DOWN;
     case 'r': return MOVE_ROTATE_CLOCK;
-    case 'R': return MOVE_ROTATE_CLOCK;
     case 't': return MOVE_ROTATE_COUNTER;
-    case 'T': return MOVE_ROTATE_COUNTER;
     case ' ': return MOVE_HOLD;
     default: return MOVE_DONT;
   }
@@ -89,7 +86,16 @@ void sleep(int ms) {
   t.tv_sec = 0;
   nanosleep(&t, NULL);
 }
- 
+/**
+ * Converts a character to it's lowercase form
+ */
+char lower(char c) {
+  if( c <= 'Z' && c >= 'A') { return c + 0x20; }
+  return c;
+}
+/**
+ * Initializes the color pairs for all the blocks
+ */
 void init_colors() {
   start_color();
   init_pair(I_BLOCK, COLOR_BLUE, COLOR_BLACK);
@@ -100,6 +106,9 @@ void init_colors() {
   init_pair(J_BLOCK, COLOR_CYAN, COLOR_BLACK);
   init_pair(L_BLOCK, COLOR_WHITE, COLOR_BLACK);
 }
+/**
+ * Initializes the screen for curses
+ */
 void init_screen() {
   initscr();      // Open a screen
   init_colors();  // Initialize color pairs

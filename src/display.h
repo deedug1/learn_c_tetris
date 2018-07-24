@@ -15,4 +15,5 @@ void draw_next(tetris_piece next_piece);
 void draw_piece(WINDOW * w, tetris_piece tp);
 int poll_input();
 void sleep(int ms);
+char lower(char c);
 #endif

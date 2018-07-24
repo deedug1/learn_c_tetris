@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "tetris.h"
+/* Tetris piece data */
 location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
  { // I
    {{0,0}, {0,1}, {0,2}, {0,3}},
@@ -48,7 +49,10 @@ location TETROMINOS[NUM_TYPES][NUM_ORIENTATIONS][NUM_BLOCKS] = {
    {{0,0}, {1,0}, {2,0}, {2,1}},
   }
 };
-
+/* Tetris game functions */
+/**
+ * Creates a new tetris_game
+ */
 tetris_game * create_tg(int rows, int cols) {
   tetris_game * tg = (tetris_game *)malloc(sizeof(tetris_game));
   tg->grid = (char *)malloc(sizeof(char) * cols * rows);
@@ -62,6 +66,9 @@ tetris_game * create_tg(int rows, int cols) {
   new_current_piece(tg);
   return tg;
 }
+/** 
+ * Generates a new current piece for the tetris_game
+ */
 void new_current_piece(tetris_game * tg) {
   tg->current = tg->next;
   tg->current.location.col = tg->cols / 2;
@@ -70,12 +77,21 @@ void new_current_piece(tetris_game * tg) {
   tg->next.location.col = 0;
   tg->next.orientation = 0;
 }
+/**
+ * Gets a single block from the tetris_game board
+ */
 char get_block(tetris_game * tg, int row, int col) {
   return tg->grid[tg->cols * row + col];
 }
+/**
+ * Sets a single block the the tetris_game board
+ */
 void set_block(tetris_game * tg, int row, int col, char c) {
   tg->grid[tg->cols * row + col] = c;
 }
+/**
+ * Places a tetris_piece on the tetris_game board
+ */
 void put_piece(tetris_game * tg, tetris_piece p) {
   int index, row, col;
   for(index = 0; index < NUM_BLOCKS; index++) {
@@ -84,26 +100,9 @@ void put_piece(tetris_game * tg, tetris_piece p) {
     set_block(tg, row, col, p.type + 1);
   }
 }
-void rotate_piece(tetris_piece * p, int direction) {
-  p->orientation += direction;
-  if(p->orientation < 0) {
-    p->orientation += NUM_ORIENTATIONS;
-  }
-  p->orientation %= NUM_ORIENTATIONS;
-}
-void remove_piece(tetris_game * tg, tetris_piece p) {
-
-}
-// Shift all rows above code{row} down one
-void shift_rows(tetris_game * tg, int row) {
-  int col;
-  for(row = row - 1; row >= 0; row--) {
-    for(col = 0; col < tg->cols; col++) {
-      set_block(tg, row + 1, col, get_block(tg, row, col));
-      set_block(tg, row, col, E_BLOCK);
-    }
-  }
-}
+/**
+ * Checks to see if a row is full
+ */
 bool is_row_full(tetris_game * tg, int row) {
   int col;
   for(col = 0; col < tg->cols; col++){
@@ -113,12 +112,44 @@ bool is_row_full(tetris_game * tg, int row) {
   }
   return true;
 }
+/**
+ * shifts every row down one starting at row + 1
+ */
+void shift_rows(tetris_game * tg, int row) {
+  int col;
+  for(row = row - 1; row >= 0; row--) {
+    for(col = 0; col < tg->cols; col++) {
+      set_block(tg, row + 1, col, get_block(tg, row, col));
+      set_block(tg, row, col, E_BLOCK);
+    }
+  }
+}
+/**
+ * Rotates a piece in {direction}
+ */
+void rotate_piece(tetris_piece * p, int direction) {
+  p->orientation += direction;
+  if(p->orientation < 0) {
+    p->orientation += NUM_ORIENTATIONS;
+  }
+  p->orientation %= NUM_ORIENTATIONS;
+}
+
+
+/**
+ * Checks to see if a block is within the bounds of the
+ *  tetris_game board
+ */
 bool is_inbounds(tetris_game * tg, int row, int col) {
   return row < tg->rows &&
          row >= 0 &&
          col < tg->cols &&
          col >= 0;
 }
+/** 
+ * Checks to see if a block can fit in the game board
+ *  at the pieces location within the tetris_game board
+ */
 bool piece_fits(tetris_game * tg, tetris_piece p) {
   int index, row, col;
   for(index = 0; index < NUM_BLOCKS; index++) {
@@ -130,6 +161,9 @@ bool piece_fits(tetris_game * tg, tetris_piece p) {
   }
   return true;
 }
+/**
+ * Ticks gravity once and performs gravity logic
+ */
 void step_gravity(tetris_game * tg) {
   tg->ticks_till_gravity--;
   if(tg->ticks_till_gravity <= 0) {
@@ -143,6 +177,9 @@ void step_gravity(tetris_game * tg) {
     } 
   }
 }
+/**
+ * Applys user input to the tetris_game
+ */
 void handle_input(tetris_game * tg, int input) {
   switch(input) {
     case MOVE_LEFT:
@@ -167,6 +204,10 @@ void handle_input(tetris_game * tg, int input) {
     break;
   }
 }
+/**
+ * Scans the tetris_game board for any lines
+ *  that need to be cleared and clears them
+ */
 int clear_lines(tetris_game * tg) {
   int row;
   int lines_cleared = 0;
@@ -179,12 +220,27 @@ int clear_lines(tetris_game * tg) {
   }
   return lines_cleared;
 }
+/**
+ * Update the games score
+ */
 void update_score(tetris_game * tg, int lines_cleared) {
   tg->score += lines_cleared * 10;
 }
+/**
+ * TODO
+ * Checks the tetris_game to see if the game is over
+ */
 bool is_game_over(tetris_game * tg) {
-  return true; //TODO
+  return true;
 }
+/**
+ * Steps one frame of the tetris_game
+ * 1. Check and apply gravity
+ * 2. Apply user input
+ * 3. Check and clear lines
+ * 4. Update score
+ * 5. Check gameover
+ */
 bool step_game(tetris_game * tg, int input) {
   int lines_cleared;
   step_gravity(tg);
